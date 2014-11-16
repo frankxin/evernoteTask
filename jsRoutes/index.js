@@ -44,7 +44,9 @@ exports.index = function(req, res) {
 						noteList[i].created = new Date(parseInt(response.notes[i].created, 10)).format("yyyy-MM-dd HH:mm");
 						noteList[i].guid = response.notes[i].guid;
 						//get thumbnail pic url form sandbox
-						var s = prefix + noteList[i].guid + '.jpg';
+
+						//if don't use token , you must be login
+						var s = prefix + noteList[i].guid + '.jpg' + '?auth=' + developerToken;
 						noteList[i].thumbnail = s;
 						noteList[i].index = i;
 						noteList[i].url = '/article/' + noteList[i].guid;
@@ -132,7 +134,8 @@ function processContent(note ,res) {
 }
 
 function makeImgUrl(urlPrefix, guid, style) {
-	var s = "<img src=\"" + urlPrefix + "res/" + guid + "\" " + style + " />";
+	//if i don't login i must send developerToken
+	var s = "<img src=\"" + urlPrefix + "res/" + guid + '?auth=' + developerToken +"\" " + style + " />";
 	console.log(s);
 	return s;
 }
