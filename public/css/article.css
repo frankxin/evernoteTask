@@ -1,0 +1,42 @@
+/* line 1, ../../sass/article.scss */
+#detail {
+  position: relative;
+  margin-top: 50px;
+}
+
+/* line 7, ../../sass/article.scss */
+.father-of-detail {
+  max-width: 732px;
+  min-width: 240px;
+  margin: 0 auto;
+}
+@media screen and (max-width: 800px) {
+  /* line 7, ../../sass/article.scss */
+  .father-of-detail {
+    max-width: 500px;
+  }
+}
+@media screen and (max-width: 571px) {
+  /* line 7, ../../sass/article.scss */
+  .father-of-detail {
+    max-width: 400px;
+  }
+}
+@media screen and (max-width: 459px) {
+  /* line 7, ../../sass/article.scss */
+  .father-of-detail {
+    max-width: 300px;
+  }
+}
+
+/* line 23, ../../sass/article.scss */
+.wrap-of-detail {
+  word-wrap: word-break;
+  overflow-wrap: break-word;
+}
+/* line 26, ../../sass/article.scss */
+.wrap-of-detail img {
+  max-width: 100% !important;
+  margin-bottom: 10px !important;
+  margin-top: 10px !important;
+}

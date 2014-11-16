@@ -1,0 +1,98 @@
+/* line 4, ../../sass/index.scss */
+.thumbnail {
+  border: 1px solid #eeeeee;
+  width: 100%;
+  height: 230px;
+}
+
+/* line 10, ../../sass/index.scss */
+#article {
+  margin-top: 80px;
+  position: relative;
+}
+
+/* line 15, ../../sass/index.scss */
+.article-detail {
+  height: 25px;
+  line-height: 25px;
+  margin-top: 11px;
+}
+/* line 19, ../../sass/index.scss */
+.article-detail .area-flow {
+  overflow: hidden;
+  width: 84%;
+  display: inline-block;
+  height: 25px;
+}
+/* line 25, ../../sass/index.scss */
+.article-detail img {
+  width: 25px;
+}
+/* line 28, ../../sass/index.scss */
+.article-detail span {
+  color: #272727;
+  line-height: 25px;
+}
+
+/* line 33, ../../sass/index.scss */
+.article-container {
+  max-width: 944px;
+  max-width: 59rem;
+  margin: 0 auto;
+}
+/* line 37, ../../sass/index.scss */
+.article-container .single-article {
+  float: left;
+  margin-left: 6%;
+  width: 27%;
+  border: 1px solid #eeeeee;
+  padding: 1%;
+  border-radius: 6px;
+  transition: 0.5s;
+  margin-bottom: 30px;
+}
+/* line 46, ../../sass/index.scss */
+.article-container .single-article:hover {
+  border: 1px solid #20c05c;
+}
+/* line 49, ../../sass/index.scss */
+.article-container .single-article:after {
+  content: ".";
+  visibility: hidden;
+  display: block;
+  height: 0;
+  clear: both;
+}
+@media screen and (max-width: 947px) {
+  /* line 37, ../../sass/index.scss */
+  .article-container .single-article {
+    width: 33%;
+    margin-left: 11%;
+  }
+}
+@media screen and (max-width: 710px) {
+  /* line 37, ../../sass/index.scss */
+  .article-container .single-article {
+    width: 41%;
+    margin-left: 6%;
+  }
+}
+@media screen and (max-width: 602px) {
+  /* line 37, ../../sass/index.scss */
+  .article-container .single-article {
+    width: 51%;
+    margin-left: 23%;
+  }
+}
+@media screen and (max-width: 503px) {
+  /* line 37, ../../sass/index.scss */
+  .article-container .single-article {
+    width: 61%;
+    margin-left: 18%;
+  }
+}
+
+/* line 74, ../../sass/index.scss */
+.clear {
+  clear: both;
+}

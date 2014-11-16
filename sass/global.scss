@@ -1,0 +1,21 @@
+@import "compass/reset";
+
+#header{
+	
+	border-bottom: 1px solid #eee;
+	.logo{
+		padding : 10px 0px 40px 0px;
+		max-width: 994px;
+		max-width: 59rem;
+		margin: 0  auto;
+		img{
+			width: 158px;
+		}
+	}
+}
+
+*{
+	box-sizing: border-box !important;
+}
+
+

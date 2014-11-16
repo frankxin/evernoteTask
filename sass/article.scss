@@ -1,0 +1,31 @@
+#detail{
+	position:relative;
+	margin-top:50px;
+}
+
+
+.father-of-detail{
+	max-width: 732px;
+	min-width:240px;
+	margin:0 auto;
+	@media screen and (max-width : 800px){
+		max-width: 500px;
+	}
+	@media screen and (max-width : 571px ) {
+		max-width: 400px;
+	}
+	@media screen and (max-width : 459px) {
+		max-width: 300px;
+	}
+}
+
+
+.wrap-of-detail{
+	word-wrap: word-break;
+	overflow-wrap: break-word;
+	img{
+		max-width: 100% !important;
+		margin-bottom: 10px !important;
+		margin-top: 10px !important;
+	}
+}
