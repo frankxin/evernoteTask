@@ -1,10 +1,10 @@
+//include evernote module
 var Evernote = require('evernote').Evernote;
-var http = require('http');
 
 //my token
 var developerToken = "S=s1:U=8fda7:E=150f5a91e69:C=1499df7ef80:P=1cd:A=en-devtoken:V=2:H=1e6f64f806f98280427f8376416f29fc";
-//just form sandbox
-var prefix = 'https://sandbox.evernote.com/shard/s1/thm/note/';
+//just form sandbox prefix , used to get the thumbnail for each note
+var prefixThm = 'https://sandbox.evernote.com/shard/s1/thm/note/';
 
 var client = new Evernote.Client({
 	token: developerToken
@@ -13,9 +13,10 @@ var client = new Evernote.Client({
 // Set up the NoteStore client 
 var noteStore = client.getNoteStore();
 
-
+/*handle request for '/' */
 exports.index = function(req, res) {
 
+	// all things will be here , sended by handlebars
 	var noteList = [];
 
 	//get list of notes
@@ -23,6 +24,8 @@ exports.index = function(req, res) {
 		if (err) {
 			console.log(err);
 		} else {
+
+			//just for test
 			for (var i in notebooks) {
 				console.log("Notebook: " + notebooks[i].name);
 			};
@@ -30,23 +33,25 @@ exports.index = function(req, res) {
 			noteFilter.words = '';
 			noteFilter.ascending = false;
 			noteFilter.inactive = false;
+			//just for test
 			console.log("!!!!!!!!!");
+			//request 50 notes
 			noteStore.findNotes(noteFilter, 0, 50, function(err, response) {
 				if (err) {
 					console.log(err);
 				} else {
+					//just for test
 					console.log(response);
 					console.log('\nthis is detail' + response.notes[2].title + '\n' + response.notes[2].tagGuids);
 					for (var i = 0, max = response.notes.length; i < max; i++) {
 						noteList[i] = {};
-						console.log('!!!!!!!!!!!!!!!!!!!');
 						noteList[i].title = response.notes[i].title;
 						noteList[i].created = new Date(parseInt(response.notes[i].created, 10)).format("yyyy-MM-dd HH:mm");
 						noteList[i].guid = response.notes[i].guid;
-						//get thumbnail pic url form sandbox
 
+						//get thumbnail pic url form sandbox
 						//if don't use token , you must be login
-						var s = prefix + noteList[i].guid + '.jpg' + '?auth=' + developerToken;
+						var s = prefixThm + noteList[i].guid + '.jpg' + '?auth=' + developerToken;
 						noteList[i].thumbnail = s;
 						noteList[i].index = i;
 						noteList[i].url = '/article/' + noteList[i].guid;
@@ -61,38 +66,45 @@ exports.index = function(req, res) {
 	});
 };
 
-exports.renderDetail = function(req , res){
+/*handle request for 'detail/id' */
+exports.renderDetail = function(req, res) {
 
+	//get guid form url
 	var guid = req.params.id;
-
+    
+    //get note by guid
 	noteStore.getNote(guid, true, true, true, false, function(err, response) {
 		while (response) {
-			processContent(response,res);
+			processContent(response, res);
 			break;
 		};
 	});
 };
 
+/*======== some func , render detail will use (start) =============*/
 
-//10进制 to 16进制
+/*10 system to 16 system*/
 Number.prototype.toHexString = function() {
 	return this.toString(16);
 }
 
-//处理接收到的bodyHash to 字符串
+/*handle bodyHash to String*/
 function toHex(data) {
 	var char = [];
 	for (var i = 0; i < data.length; i++) {
 		var d = data[i];
-		char[i * 2] = Math.floor(d / 16).toHexString(); //why
+		char[i * 2] = Math.floor(d / 16).toHexString(); //why i have to devide by 16
 		char[i * 2 + 1] = (d % 16).toHexString();
 	};
 	return char.join('');
 };
 
-function processContent(note ,res) {
+
+/*process content <en-note> and <en-media> to "body" and "img"*/
+function processContent(note, res) {
 	var patternEnNote = /<en-note[^>]*/i,
 		patternEnMedia = /(<en-media[^<]+<\/en-media>)/ig,
+		//hard code urlPrefix for test, used to get img in  content 
 		urlPrefix = "https://sandbox.evernote.com/shard/s1/";
 
 	var content = note.content,
@@ -101,9 +113,8 @@ function processContent(note ,res) {
 		startIndex = out.index + out[0].length,
 		endIndex = content.lastIndexOf("</en-note>"),
 		body = content.substring(startIndex, endIndex);
-	console.log(body);
-	console.log(startIndex);
 
+	//replace the en-media
 	var newContent = body.replace(patternEnMedia, function(match, pos, originalText) {
 		var patternHash = /hash=\"([0-9a-f]+)\"/,
 			patternStyle = /style=\"[^"]+\"/i,
@@ -111,7 +122,7 @@ function processContent(note ,res) {
 
 		var key = match.match(patternHash),
 			hash = key[1];
-
+		//match the style of img
 		var styleIsNuLL = match.match(patternStyle);
 
 		if (styleIsNuLL != null) {
@@ -128,21 +139,28 @@ function processContent(note ,res) {
 			};
 		};
 	});
+	//prepare a entire content to render
 	var allContent = "<div " + newContent + "</div>";
 
-	res.render('article' , { content : allContent});
+	res.render('article', {
+		content: allContent
+	});
 }
 
+/*construct the img Url*/
 function makeImgUrl(urlPrefix, guid, style) {
+
 	//if i don't login i must send developerToken
-	var s = "<img src=\"" + urlPrefix + "res/" + guid + '?auth=' + developerToken +"\" " + style + " />";
+	var s = "<img src=\"" + urlPrefix + "res/" + guid + '?auth=' + developerToken + "\" " + style + " />";
 	console.log(s);
 	return s;
 }
-
-//format timestamp to localTime
-
+/**
+*format timestamp to localTime , 
+*copy form the internet override format method
+*/
 Date.prototype.format = function(e) {
+
 	var a = function(m, l) {
 		var n = "",
 			k = (m < 0),
@@ -181,8 +199,63 @@ Date.prototype.format = function(e) {
 	return e
 };
 
+/*======== some func , render detail will use (end)=============*/
 
+/*oauth*/
+var callbackUrl = "http://127.0.0.1:3000/oauth_callback";
 
+exports.oauth = function(req, res) {
+  var client = new Evernote.Client({
+    consumerKey: config.API_CONSUMER_KEY,
+    consumerSecret: config.API_CONSUMER_SECRET,
+    sandbox: config.SANDBOX
+  });
+
+  client.getRequestToken(callbackUrl, function(error, oauthToken, oauthTokenSecret, results){
+    if(error) {
+      req.session.error = JSON.stringify(error);
+      res.redirect('/');
+    }
+    else { 
+      // store the tokens in the session , when call back will use it
+      req.session.oauthToken = oauthToken;
+      req.session.oauthTokenSecret = oauthTokenSecret;
+
+      // redirect the user to authorize the token
+      res.redirect(client.getAuthorizeUrl(oauthToken));
+    }
+  });
+};
+
+// oAuth callback
+exports.oauth_callback = function(req, res) {
+  var client = new Evernote.Client({
+    consumerKey: "ericzhang93",
+    consumerSecret: "35eb507bffb08911",
+    sandbox: true
+  });
+
+  client.getAccessToken(
+    req.session.oauthToken, 
+    req.session.oauthTokenSecret, 
+    req.param('oauth_verifier'), 
+    function(error, oauthAccessToken, oauthAccessTokenSecret, results) {
+      if(error) {
+        console.log('error : '+error);
+        res.redirect('/');
+      } else {
+        // store the access token in the session
+        req.session.oauthAccessToken = oauthAccessToken;
+        req.session.edamUserId = results.edam_userId;
+
+        //the webApiUrlPrefix can't be used directly , /notestore should be delete
+        req.session.edamWebApiUrlPrefix = results.edam_webApiUrlPrefix;
+        res.redirect('/');
+      }
+    });
+};
+
+/*some problem*/
 // noteStore.getNoteTagNames(response.notes[i].guid,function(err,tag){
 // 	 if(note.tag&&note.title&&note.created){
 // 	 	console.log('succesful!!!' + '\n' + note.title + '\n' + note.tag + '\n' + note.created);

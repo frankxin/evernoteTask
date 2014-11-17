@@ -1,5 +1,6 @@
 $ever-f-color : #50be4b;
 $border-color : #eee;
+$border-color-more-dark : #c2c2c2;
 
 .thumbnail{
 	border : 1px solid $border-color;
@@ -21,6 +22,8 @@ $border-color : #eee;
 		width: 84%;
 		display: inline-block;
 		height: 25px;
+		white-space: nowrap;
+		text-overflow: ellipsis;
 	}
 	img{
 		width: 25px;
@@ -38,7 +41,7 @@ $border-color : #eee;
 		float: left;
 		margin-left: 6%;
 		width: 27%;
-		border: 1px solid $border-color;
+		border: 1px solid $border-color-more-dark;
 		padding: 1%;
 		border-radius: 6px;
 		transition: 0.5s;
@@ -70,7 +73,4 @@ $border-color : #eee;
 			margin-left: 18%;
 		}
 	}
-}
-.clear{
-	clear:both;
 }
